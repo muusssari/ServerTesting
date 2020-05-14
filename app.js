@@ -13,6 +13,6 @@ SocketIO.on("connection", socket => {
   socket.emit("serverData", data);
 });
 
-Http.listen(3000, () => {
+Http.listen(3000, "0.0.0.0", () => {
   console.log("listening at :3000....");
 });
