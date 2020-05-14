@@ -9,6 +9,7 @@ let data = {
 };
 
 SocketIO.on("connection", socket => {
+  console.log("socket connected");
   socket.emit("serverData", data);
 });
 
