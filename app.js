@@ -15,6 +15,15 @@ const SocketIO = require('socket.io');
 const commentList = [];
 const connectedSockets = [];
 
+const httpsServerTest = https.createServer(options, Express);
+httpsServerTest.listen(5000, () => {
+  console.log("5000 open")
+});
+
+httpsServerTest.get('/', function(req,res) {
+  res.send('hello');
+});
+
 function emitNewOrder(server) {
   const io = SocketIO.listen(server);
 
