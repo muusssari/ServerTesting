@@ -15,6 +15,7 @@ SocketIO.on("connection", socket => {
   connectedSockets.push(socket);
   socket.on('disconnect', () => {
     console.log("socket disconnected");
+    removeA(connectedSockets, socket);
   });
 
   socket.emit("serverData", data);
@@ -56,3 +57,15 @@ Http.listen(3000, "0.0.0.0", () => {
 });
 
 //const comment = new Comment(x.comment, x.Author, x.timestamp, x.pos, x.cameraState, button, this);
+
+
+function removeA(arr) {
+  var what, a = arguments, L = a.length, ax;
+  while (L > 1 && arr.length) {
+      what = a[--L];
+      while ((ax= arr.indexOf(what)) !== -1) {
+          arr.splice(ax, 1);
+      }
+  }
+  return arr;
+}
