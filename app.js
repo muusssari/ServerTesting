@@ -1,6 +1,10 @@
 const Express = require('express')();
-const Http = require('http').Server(Express);
-const SocketIO = require('socket.io')(Http);
+const fs = require('fs');
+const Https = require('https').createServer({
+  key: fs.readFileSync('./server.key'),
+  cert: fs.readFileSync('./server.cert')
+}, Express);
+const SocketIO = require('socket.io')(Https);
 
 
 //Test data, so client is connected to server right
@@ -52,7 +56,7 @@ function sendCommentToOtherSockets(id, data) {
   });
 }
 
-Http.listen(3000, "0.0.0.0", () => {
+Https.listen(3000, "0.0.0.0", () => {
   console.log("listening at :3000....");
 });
 
