@@ -1,4 +1,4 @@
-const Express = require('express')();
+const App = require('express')();
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
@@ -8,23 +8,23 @@ const options = {
   cert: fs.readFileSync('./server.cert')
 };
 
-//const httpServer = http.createServer(Express).listen(3001);
-const httpsServer = https.createServer(options, Express).listen(3000, () => {console.log("https: 3000")});
+//const httpServer = http.createServer(App).listen(3001);
+//const httpsServer = https.createServer(options, App).listen(3000, () => {console.log("https: 3000")});
+
+App.get('/', function(req,res) {
+  res.send('hello');
+});
+
+https.createServer(options,App).listen(5000, () => {
+  console.log("5000 open")
+});
+
+
+ /*
 
 const SocketIO = require('socket.io');
 const commentList = [];
 const connectedSockets = [];
-
-const httpsServerTest = https.createServer(options, Express);
-
-
-httpsServerTest.get('/', function(req,res) {
-  res.send('hello');
-});
-
-httpsServerTest.listen(5000, () => {
-  console.log("5000 open")
-});
 
 function emitNewOrder(server) {
   const io = SocketIO.listen(server);
