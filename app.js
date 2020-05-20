@@ -14,8 +14,8 @@ App.use('/', express.static(path.join(__dirname, '.', 'client')))
 //-------------------------------- */
 
 const options = {
-  key: fs.readFileSync(path.join('./server.key')),
-  cert: fs.readFileSync(path.join('./server.cert'))
+  key: fs.readFileSync('./key.pem', 'utf8'),
+  cert: fs.readFileSync('./server.crt', 'utf8')
 };
 
 https.createServer(options, App)
