@@ -23,14 +23,17 @@ https.createServer(options, App)
     console.log("running server 3000 https");
   });
 
-
+//HTTPS server
+const httpsServer = http.createServer(App).listen(3000, "0.0.0.0", () => {
+  console.log("http server started port: 3000");
+});
 
 
   /* //HTTP server default
 const httpServer = http.createServer(App).listen(3000, "0.0.0.0", () => {
   console.log("http server started port: 3000");
 });
-
+*/
 
 const SocketIO = require('socket.io');
 const commentList = [];
@@ -73,7 +76,7 @@ function emitNewOrder(server) {
     });
   });
 }
-emitNewOrder(httpServer);
+emitNewOrder(httpsServer);
 
 
 function sendThreadToOtherSockets(id, data) {
@@ -99,4 +102,4 @@ function removeA(arr) {
       }
   }
   return arr;
-}*/
+}
