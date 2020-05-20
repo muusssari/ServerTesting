@@ -1,39 +1,17 @@
 const express = require('express');
 const App = express();
 const fs = require('fs');
-//const http = require('http');
 const https = require('https');
-//const path = require('path');
-
-//Default Test server
-//App.use('/', express.static(path.join(__dirname, '.', 'client')))
-
-/*http.createServer(App).listen('3001', () => {
-  console.log("running server 3001")
-});*/
-//-------------------------------- */
 
 const options = {
   key: fs.readFileSync('./spike-chat.tridify.com.key', 'utf8'),
   cert: fs.readFileSync('./spike-chat.tridify.com.cer', 'utf8')
 };
 
-/*https.createServer(options, App)
-  .listen('3000', () => {
-    console.log("running server 3000 https");
-  });*/
-
 //HTTPS server
 const httpsServer = https.createServer(options, App).listen(3000, "0.0.0.0", () => {
   console.log("http server started port: 3000");
 });
-
-
-  /* //HTTP server default
-const httpServer = http.createServer(App).listen(3000, "0.0.0.0", () => {
-  console.log("http server started port: 3000");
-});
-*/
 
 const SocketIO = require('socket.io');
 const commentList = [];
@@ -52,11 +30,6 @@ function emitNewOrder(server) {
       console.log("socket disconnected");
       removeA(connectedSockets, socket);
     });
-    let testObject = {
-      text: "works"
-    };
-    socket.emit("serverData", testObject);
-
     socket.on('addCommentServer', (data) => {
       commentList.push(data);
       sendCommentToOtherSockets(socket.id, data);
