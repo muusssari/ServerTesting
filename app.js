@@ -14,8 +14,8 @@ const https = require('https');
 //-------------------------------- */
 
 const options = {
-  key: fs.readFileSync('./key.pem', 'utf8'),
-  cert: fs.readFileSync('./server.crt', 'utf8')
+  key: fs.readFileSync('./spike_chat.tridify.com.key', 'utf8'),
+  cert: fs.readFileSync('./spike_chat.tridify.com.cer', 'utf8')
 };
 
 /*https.createServer(options, App)
