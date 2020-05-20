@@ -3,10 +3,10 @@ const App = express();
 const fs = require('fs');
 //const http = require('http');
 const https = require('https');
-const path = require('path');
+//const path = require('path');
 
 //Default Test server
-App.use('/', express.static(path.join(__dirname, '.', 'client')))
+//App.use('/', express.static(path.join(__dirname, '.', 'client')))
 
 /*http.createServer(App).listen('3001', () => {
   console.log("running server 3001")
@@ -18,13 +18,13 @@ const options = {
   cert: fs.readFileSync('./server.crt', 'utf8')
 };
 
-https.createServer(options, App)
+/*https.createServer(options, App)
   .listen('3000', () => {
     console.log("running server 3000 https");
-  });
+  });*/
 
 //HTTPS server
-const httpsServer = http.createServer(App).listen(3000, "0.0.0.0", () => {
+const httpsServer = https.createServer(options, App).listen(3000, "0.0.0.0", () => {
   console.log("http server started port: 3000");
 });
 
