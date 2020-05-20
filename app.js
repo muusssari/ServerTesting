@@ -1,29 +1,32 @@
 const express = require('express');
 const App = express();
 const fs = require('fs');
-const http = require('http');
-//const https = require('https');
+//const http = require('http');
+const https = require('https');
 const path = require('path');
 
 //Default Test server
-//App.use('/', express.static(path.join(__dirname, '.', 'client')))
-/*
-http.createServer(App).listen('3001', () => {
+App.use('/', express.static(path.join(__dirname, '.', 'client')))
+
+/*http.createServer(App).listen('3001', () => {
   console.log("running server 3001")
-});
+});*/
 //-------------------------------- */
-/*
+
 const options = {
-  key: fs.readFileSync(path.join('./server.crt')),
+  key: fs.readFileSync(path.join('./server.key')),
   cert: fs.readFileSync(path.join('./server.cert'))
 };
 
 https.createServer(options, App)
   .listen('3000', () => {
     console.log("running server 3000 https");
-  })*/
+  });
 
 
+
+
+  /* //HTTP server default
 const httpServer = http.createServer(App).listen(3000, "0.0.0.0", () => {
   console.log("http server started port: 3000");
 });
@@ -96,4 +99,4 @@ function removeA(arr) {
       }
   }
   return arr;
-}
+}*/
