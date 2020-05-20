@@ -2,17 +2,17 @@ const express = require('express');
 const App = express();
 const fs = require('fs');
 const http = require('http');
-const https = require('https');
+//const https = require('https');
 const path = require('path');
 
 //Default Test server
-App.use('/', express.static(path.join(__dirname, '.', 'client')))
+//App.use('/', express.static(path.join(__dirname, '.', 'client')))
 /*
 http.createServer(App).listen('3001', () => {
   console.log("running server 3001")
 });
 //-------------------------------- */
-
+/*
 const options = {
   key: fs.readFileSync(path.join('./server.crt')),
   cert: fs.readFileSync(path.join('./server.cert'))
@@ -21,18 +21,13 @@ const options = {
 https.createServer(options, App)
   .listen('3000', () => {
     console.log("running server 3000 https");
-  })
-
-//const httpServer = http.createServer(App).listen(3001);
-//const httpsServer = https.createServer(options, App).listen(3000, () => {console.log("https: 3000")});
+  })*/
 
 
-/*https.createServer(options,App).listen(5000, () => {
-  console.log("5000 open")
-});*/
+const httpServer = http.createServer(App).listen(3000, "0.0.0.0", () => {
+  console.log("http server started port: 3000");
+});
 
-
- /*
 
 const SocketIO = require('socket.io');
 const commentList = [];
@@ -75,7 +70,7 @@ function emitNewOrder(server) {
     });
   });
 }
-emitNewOrder(httpsServer);
+emitNewOrder(httpServer);
 
 
 function sendThreadToOtherSockets(id, data) {
@@ -91,10 +86,6 @@ function sendCommentToOtherSockets(id, data) {
     x.emit('newCommentClient', data)
   });
 }
-/*, "0.0.0.0"
-Https.listen(3000, () => {
-  console.log("listening at :3000....");
-});*/
 
 function removeA(arr) {
   var what, a = arguments, L = a.length, ax;
