@@ -1,27 +1,27 @@
 const express = require('express');
 const App = express();
 const fs = require('fs');
+const http = require('http');
 const https = require('https');
 
-const options = {
-  key: fs.readFileSync('./spike-chat.tridify.com.key', 'utf8'),
-  cert: fs.readFileSync('./spike-chat.tridify.com.cer', 'utf8')
-};
+// const options = {
+//   key: fs.readFileSync('./spike-chat.tridify.com.key', 'utf8'),
+//   cert: fs.readFileSync('./spike-chat.tridify.com.cer', 'utf8')
+// };
 
 //HTTPS server
-const httpsServer = https.createServer(options, App).listen(3000, "0.0.0.0", () => {
+const httpsServer = http.createServer(App).listen(3000, "0.0.0.0", () => {
   console.log("http server started port: 3000");
 });
 
 const SocketIO = require('socket.io');
-const commentList = [];
+const threadList = [];
 const connectedSockets = [];
 
 function emitNewOrder(server) {
   const io = SocketIO.listen(server);
 
   //Test data, so client is connected to server right
-  
 
   io.on("connection", socket => {
     console.log("socket connected");
@@ -30,21 +30,21 @@ function emitNewOrder(server) {
       console.log("socket disconnected");
       removeA(connectedSockets, socket);
     });
-    socket.on('addCommentServer', (data) => {
-      commentList.push(data);
-      sendCommentToOtherSockets(socket.id, data);
-    });
     socket.on('addThreadServer', (data) => {
-      commentList[data.mainId].threadCommentList.push(data);
+      threadList.push(data);
       sendThreadToOtherSockets(socket.id, data);
+    });
+    socket.on('addCommentServer', (comment) => {
+      threadList[comment.threadId].threadComments.push(comment);
+      sendCommentToOtherSockets(socket.id, comment);
     });
 
     socket.on("CheckLocalComments", (data) => {
-      if(commentList.length > 0) {
-        //send comments that user doesnt have
+      if(threadList.length > 0) {
+        //send comments that user doesn't have
 
         //send all comments if user has none of them
-        socket.emit("SendMissingComments", commentList);
+        socket.emit("SendMissingComments", threadList);
       }
     });
   });
@@ -52,17 +52,17 @@ function emitNewOrder(server) {
 emitNewOrder(httpsServer);
 
 
-function sendThreadToOtherSockets(id, data) {
-  const sockets = connectedSockets.filter(x => x.id !== id);
-  sockets.map(x => {
-    x.emit('addThreadClient', data)
-  });
-}
-
 function sendCommentToOtherSockets(id, data) {
   const sockets = connectedSockets.filter(x => x.id !== id);
   sockets.map(x => {
     x.emit('newCommentClient', data)
+  });
+}
+
+function sendThreadToOtherSockets(id, data) {
+  const sockets = connectedSockets.filter(x => x.id !== id);
+  sockets.map(x => {
+    x.emit('newThreadClient', data)
   });
 }
 
