@@ -30,12 +30,12 @@ function emitNewOrder(server) {
       console.log("socket disconnected");
       removeA(connectedSockets, socket);
     });
-    socket.on('addThreadServer', (data) => {
-      threadList.push(data);
-      sendThreadToOtherSockets(socket.id, data);
+    socket.on('addThreadServer', (thread) => {
+      threadList[thread.id] = thread;
+      sendThreadToOtherSockets(socket.id, thread);
     });
     socket.on('addCommentServer', (comment) => {
-      threadList[comment.threadId].threadComments.push(comment);
+      threadList[comment.threadId].threadComments[comment.id] = comment;
       sendCommentToOtherSockets(socket.id, comment);
     });
 
