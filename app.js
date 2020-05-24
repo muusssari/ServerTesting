@@ -4,13 +4,13 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 
-// const options = {
-//   key: fs.readFileSync('./spike-chat.tridify.com.key', 'utf8'),
-//   cert: fs.readFileSync('./spike-chat.tridify.com.cer', 'utf8')
-// };
+const options = {
+  key: fs.readFileSync('./spike-chat.tridify.com.key', 'utf8'),
+  cert: fs.readFileSync('./spike-chat.tridify.com.cer', 'utf8')
+};
 
 //HTTPS server
-const httpsServer = http.createServer(App).listen(3000, "0.0.0.0", () => {
+const httpsServer = https.createServer(App).listen(3000, "0.0.0.0", () => {
   console.log("http server started port: 3000");
 });
 
