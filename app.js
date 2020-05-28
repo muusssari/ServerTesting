@@ -10,7 +10,7 @@ const options = {
 };
 
 //HTTPS server
-const httpsServer = https.createServer(App).listen(3000, "0.0.0.0", () => {
+const httpsServer = https.createServer(App, options).listen(3000, "0.0.0.0", () => {
   console.log("http server started port: 3000");
 });
 
