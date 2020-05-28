@@ -10,12 +10,12 @@ const options = {
 };
 
 //HTTPS server
-const httpsServer = https.createServer(options, App).listen(3000, "0.0.0.0", () => {
+const httpsServer = https.createServer(App).listen(3000, "0.0.0.0", () => {
   console.log("http server started port: 3000");
 });
 
 const SocketIO = require('socket.io');
-const threadList = [];
+const threadList = {};
 const connectedSockets = [];
 
 function emitNewOrder(server) {
@@ -25,26 +25,34 @@ function emitNewOrder(server) {
 
   io.on("connection", socket => {
     console.log("socket connected");
-    connectedSockets.push(socket);
+    //connectedSockets.push(socket);
     socket.on('disconnect', () => {
+      
       console.log("socket disconnected");
       removeA(connectedSockets, socket);
     });
+
+
     socket.on('addThreadServer', (thread) => {
-      threadList[thread.id] = thread;
-      sendThreadToOtherSockets(socket.id, thread);
+      if(threadList.hasOwnProperty(socket.modelHash)) {
+        threadList[socket.modelHash].push(thread);
+      }else {
+        threadList[socket.modelHash] = [thread];
+      }
+      
+      sendThreadToOtherSockets(socket.id, socket.modelHash, thread);
     });
+
     socket.on('addCommentServer', (comment) => {
-      threadList[comment.threadId].threadComments[comment.id] = comment;
-      sendCommentToOtherSockets(socket.id, comment);
+      threadList[socket.modelHash][comment.threadId].threadComments[comment.id] = comment;
+      sendCommentToOtherSockets(socket.id, socket.modelHash, comment);
     });
 
     socket.on("CheckLocalComments", (data) => {
-      if(threadList.length > 0) {
-        //send comments that user doesn't have
-
-        //send all comments if user has none of them
-        socket.emit("SendMissingComments", threadList);
+      socket.modelHash = data.modelHash;
+      connectedSockets.push(socket);
+      if(threadList.hasOwnProperty(socket.modelHash)){
+        socket.emit("SendMissingComments", threadList[socket.modelHash]);
       }
     });
   });
@@ -52,15 +60,15 @@ function emitNewOrder(server) {
 emitNewOrder(httpsServer);
 
 
-function sendCommentToOtherSockets(id, data) {
-  const sockets = connectedSockets.filter(x => x.id !== id);
+function sendCommentToOtherSockets(id, hash, data) {
+  const sockets = connectedSockets.filter(x => x.id !== id).filter(y => y.modelHash === hash);
   sockets.map(x => {
     x.emit('newCommentClient', data)
   });
 }
 
-function sendThreadToOtherSockets(id, data) {
-  const sockets = connectedSockets.filter(x => x.id !== id);
+function sendThreadToOtherSockets(id, hash, data) {
+  const sockets = connectedSockets.filter(x => x.id !== id).filter(y => y.modelHash === hash);
   sockets.map(x => {
     x.emit('newThreadClient', data)
   });
