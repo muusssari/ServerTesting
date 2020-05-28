@@ -1,7 +1,7 @@
 const express = require('express');
 const App = express();
 const fs = require('fs');
-const http = require('http');
+//const http = require('http');
 const https = require('https');
 
 const options = {
@@ -10,7 +10,7 @@ const options = {
 };
 
 //HTTPS server
-const httpsServer = https.createServer(App, options).listen(3000, "0.0.0.0", () => {
+const httpsServer = https.createServer(options, App).listen(3000, "0.0.0.0", () => {
   console.log("http server started port: 3000");
 });
 
@@ -25,7 +25,6 @@ function emitNewOrder(server) {
 
   io.on("connection", socket => {
     console.log("socket connected");
-    //connectedSockets.push(socket);
     socket.on('disconnect', () => {
       
       console.log("socket disconnected");
